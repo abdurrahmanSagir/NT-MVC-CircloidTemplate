@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "UserRoles";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="block">
+            <div class="block-heading">
+                <div class="main-text h2">
+                    Rol Atama Sayfası
+                </div>
+                <div class="block-controls">
+                    <a href="/User/Index"<span aria-hidden="true" class="icon icon-cross icon-size-medium block-control-remove"></span></a>
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                </div>
+            </div>
+            <div class="block-content-outer">
+                <div class="block-content-inner">
+
+                    <div class="h2">
+                        <label for="exampleInputEmail1">Kullanıcı Adı:@ViewBag.Username </label>
+                    </div>
+
+                    <form action="/User/AssignRole" method="post" role="form">
+                        <!--enctype="multipart/form-data" unutma sakın-->
+                        <div class="form-group">
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group h4">
+                                        Kullanıcı Bilgileri:
+                                    </div>
+                                    <div id="divUserRoles">
+                                        <select multiple class="form-control" id="selectUserRoles" name="removedRoles">
+                                            @{
+                                                foreach (string role in ViewBag.UserRoles)
+                                                {
+                                                    <option value="@role">@role</option>
+                                                }
+
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

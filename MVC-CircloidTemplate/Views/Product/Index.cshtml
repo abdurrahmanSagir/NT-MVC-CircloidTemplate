@@ -1,0 +1,160 @@
+﻿
+@{
+    ViewBag.Title = "Urunler";
+}
+@using MVC_CircloidTemplate.Models
+
+@model List<Product>
+
+
+
+
+@section scripts
+{
+    <script src="~/Content/assets/js/required/jquery-1.11.1.min.js"></script>
+    <script>
+        function productClick(productID, productName) {
+            /**/
+            window.location.href = "/Product/UpdateProduct?prdID=" + productID + "&prdName=" + productName;
+            /**/
+
+        }
+    </script>
+    <script>
+        function addToCart(id2) {
+            
+            var id = id2;
+            
+            $.ajax({
+                type: "POST",
+                url: "/Product/AddToCart?id=" + id,
+                success: function (messageAddCart) {
+                    alert(messageAddCart);
+                    $.ajax({
+                        type: "Get",
+                        url: "/Product/PartialProductCountNav",
+                        success: function (response) {
+                            $("#basket").html(response);
+                        },
+                        error: function () {
+                            alert("Ürün sayısını getirmede bir hata oluştu.");
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Ürün eklerken bir hata oluştu");
+                }
+                //buralarda bişeyler var buralara bak
+            });
+        }
+
+    </script>
+    <style>
+        td:hover {
+            cursor: pointer;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="block">
+            <div class="block-heading">
+                <div class="main-text h2">
+                    Ürünler Listesi
+                </div>
+                <div class="block-controls">
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href=/Product/AddProduct class="btn btn-success" role="button">Ürün Ekle</a>
+                </div>
+            </div>
+            <div class="block-content-outer">
+                <div class="block-content-inner">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ürün Adı</th>
+                                <th>TedarikçiID</th>
+
+                                <th>Tedarikçi</th>
+                                <th>KategoriID</th>
+
+                                <th>Kategori</th>
+                                <th>Birimdeki Miktar</th>
+                                <th>Fiyat</th>
+                                <th>Stok</th>
+                                <th>Siparişteki Miktar</th>
+                                <th>Yeniden Şipariş Miktarı</th>
+                                <th>Sonlandı</th>
+                                <th>Sepete Ekle</th>
+                                <th>Güncelle</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (Product prd in Model)
+                                {
+                                    <tr>
+
+                                        <td>@prd.ProductName</td>
+                                        <td>@prd.SupplierID</td>
+                                        @if (prd.Supplier?.CompanyName == null)
+                                        {
+                                            <td>
+                                                <span class="label label-info"></span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <span class="label label-info">@prd.Supplier.CompanyName</span>
+                                            </td>
+
+                                        }
+                                        <td>@prd.CategoryID</td>
+                                        @if (prd.Category?.CategoryName == null)
+                                        {
+                                            <td>
+                                                <span class="label label-primary"></span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <span class="label label-primary">@prd.Category.CategoryName</span>
+                                            </td>
+
+
+                                        }
+
+                                        <td>@prd.QuantityPerUnit</td>
+                                        <td>@prd.UnitPrice</td>
+                                        <td>@prd.UnitsInStock</td>
+                                        <td>@prd.UnitsOnOrder</td>
+                                        <td>@prd.ReorderLevel</td>
+
+                                        @if (prd.Discontinued)
+                                        {
+                                            <td><span class="label label-danger">Satıs Yok</span></td>
+                                            <td><a href="#" class="btn addToCart" data-id="@prd.ProductID" onclick="addToCart(@prd.ProductID)" disabled>@prd.ProductID</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="label label-success">Satıs Var</span></td>
+                                            <td><a href="#" class="btn addToCart" data-id="@prd.ProductID" onclick="addToCart(@prd.ProductID)">Sepete Ekle</a></td>
+                                        }
+
+                                        <td><a href="/Product/UpdateProduct?prdID=@prd.ProductID&prdName=@prd.ProductName&prdFrom=Güncelleme" class="btn btn-primary rounded">Güncelle</a></td>
+                                        <td><a href="/Product/DeleteProduct/@prd.ProductID" class="btn btn-danger rounded">Sil</a></td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

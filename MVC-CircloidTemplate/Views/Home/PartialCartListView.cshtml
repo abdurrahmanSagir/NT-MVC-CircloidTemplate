@@ -1,0 +1,50 @@
+﻿@using MVC_CircloidTemplate.App_Classes;
+@using MVC_CircloidTemplate.Models;
+@model List<Product>
+@{
+
+    Cart crt = new Cart();
+    if (Session["CurrentCart"] != null)
+    {
+        crt = (Cart)Session["CurrentCart"];
+        <table class="table table-striped table-hover">
+            <thead>
+
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Kategori</th>
+                    <th>Fiyat</th>
+                    <th>Sil</th>
+                </tr>
+
+            </thead>
+            <tbody>
+
+                @{
+
+                    foreach (Product prd in crt.PrdList)
+                    {
+                        <tr>
+
+                            <td>@prd.ProductName</td>
+                            <td>@prd.Category.CategoryName</td>
+                            <td>@prd.UnitPrice</td>
+                            <td><a href="#" onclick="removeFromCart(@prd.ProductID)" class="btn btn-danger rounded">Sil</a></td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <span style="font-size:24px" class="text-center">
+            Sepetinizde Ürün Bulunmamaktadır
+        </span>
+
+    }
+
+
+
+}

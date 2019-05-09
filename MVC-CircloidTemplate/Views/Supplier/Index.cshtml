@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@using MVC_CircloidTemplate.Models
+@section head{
+    <style>
+        .hata {
+            color: red;
+        }
+    </style>
+
+    <script src="~/Content/assets/js/required/jquery-1.11.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".modalAc").click(function () {
+                alert("desafsadsdfs");
+                const sirketAdi = $(this).data("supname");
+                const id = $(this).data("supid");
+                console.log(sirketAdi, id);
+                $(".modal-body > p.mesaj").html(sirketAdi + " tedarikçisi silinsin mi?");
+                $(".tedModalSil").data("tedid", id);
+            });
+            $(".tedModalSil").click(function () {
+                const tedID = $(this).data("tedid");
+                console.log("const tedID=" + tedID);
+                $.ajax({
+                    type: "POST",
+                    url: "/Supplier/DeleteSupplier/" + tedID, /*burada Sıkıntı var gönderilen değerler tutmuyo*/
+                    success: function (durum) {
+                        if (durum === "OK") {
+                            alert("Kayıt Silindi");
+                            window.location.replace("/Supplier/Index");
+                        }
+                        else {
+                            alert("Kayıt Silme Sırasında Hata Oluştu");
+                        }
+                    },
+                    error: function () {
+                        alert("Kayıt silme Sırasında Hata Oluştu");
+                    }
+                });
+
+            });
+        });
+    </script>
+
+   
+
+
+
+}
+@model List<Supplier>
+<div class="row">
+    <div class="col-md-12">
+        <div class="block">
+            <div class="block-heading">
+                <div class="main-text h2">
+                    Tedarikciler
+                </div>
+                <div class="block-controls">
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href="/Supplier/AddSupplier" class="btn btn-success rounded" role="button">Tedarikci Ekle</a>
+                </div>
+            </div>
+            <div class="block-content-outer">
+                <div class="block-content-inner">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sirket Adi</th>
+                                <th>Ilgili Kisi</th>
+                                <th>Ilgili Kisi Unvani</th>
+                                <th>Adres</th>
+                                <th>Sehir</th>
+                                <th>Bolge</th>
+                                <th>Posta Kodu</th>
+                                <th>Ulke</th>
+                                <th>Telefon Numarasi</th>
+                                <th>Fax</th>
+                                <th>Güncelle</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Supplier sup in Model)
+                            {
+                                <tr>
+                                    <td>@sup.CompanyName</td>
+                                    <td>@sup.ContactName</td>
+                                    <td>@sup.ContactTitle</td>
+                                    <td>@sup.Address</td>
+                                    <td>@sup.City</td>
+                                    <td>@sup.Region</td>
+                                    <td>@sup.PostalCode</td>
+                                    <td>@sup.Country</td>
+                                    <td>@sup.Phone</td>
+                                    <td>@sup.Fax</td>
+                                    <td><a href="/Supplier/UpdateSupplier/@sup.SupplierID" class="btn btn-primary rounded">Güncelle</a></td>
+                                    <td>
+                                        <a href="/Supplier/DeleteSupplier/@sup.SupplierID" class="btn btn-danger rounded">Sil</a>
+                                        <button class="btn btn-danger rounded modalAc" data-toggle="modal" data-target="#myModal" data-supid="@sup.SupplierID" data-supname="@sup.CompanyName">
+                                            Model ile Sil
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section body{
+    <div class="modal fade small-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="small-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" data-border-top="multi">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="small-modal-label">Small Modal Box</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="mesaj"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-danger tedModalSil">Sil</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+
+}

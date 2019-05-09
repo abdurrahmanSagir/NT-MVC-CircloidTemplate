@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "MyCart";
+}
+@using MVC_CircloidTemplate.App_Classes;
+@using MVC_CircloidTemplate.Models;
+
+@section scripts{
+    <script src="~/Content/assets/js/required/jquery-1.11.1.min.js"></script>
+    <script>
+        function removeFromCart(id2) {
+
+            var id = id2;
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/RemoveCart?id=" + id,
+                success: function (messageRemoveCart) {
+                    alert(messageRemoveCart);
+                    $.ajax({
+                        type: "GET",
+                        url: "/Home/PartialCartListView",
+                        success: function (response) {
+                            $("#basketList").html(response);
+                            alert("Burası Partial flan filazn");
+                        },
+                        error: function () {
+                            alert("Ürün tablosunda değişiklik yaparken bir hata oluştu");
+                        }
+                    });
+                    $.ajax({
+                        type: "Get",
+                        url: "/Product/PartialProductCountNav",
+                        success: function (response) {
+                            $("#basket").html(response);
+                        },
+                        error: function () {
+                            alert("Ürün sayısını getirmede bir hata oluştu.");
+                        }
+                    });
+                },
+                error: function () {
+                    alert("Ürün silerken bir hata oluştu");
+                }
+                //buralarda bişeyler var buralara bak
+            });
+        }
+    </script>
+
+
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="block">
+            <div class="block-heading">
+                <div class="main-text h2">
+                    Sepet
+                </div>
+                <div class="block-controls">
+                    <span aria-hidden="true" class="icon icon-arrow-down icon-size-medium block-control-collapse"></span>
+                    <a href=/Product/Index class="btn btn-success" role="button">Ürün Ekle</a>
+                </div>
+            </div>
+            <div class="block-content-outer">
+                <div id="basketList"class="block-content-inner">
+                    @{
+
+                        if (Session["CurrentCart"] != null)
+                        {
+                            Cart c = (Cart)Session["CurrentCart"];
+                            @Html.Partial("/Views/Home/PartialCartListView.cshtml", c.PrdList);
+                        }
+
+                        @*Cart crt = new Cart();
+            if (Session["CurrentCart"] != null)
+            {
+                crt = (Cart)Session["CurrentCart"];
+                <table class="table table-striped table-hover">
+                    <thead>
+
+                        <tr>
+                            <th>Ürün Adı</th>
+                            <th>Kategori</th>
+                            <th>Fiyat</th>
+                            <th>Sil</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+
+                        @{
+
+                            foreach (Product prd in crt.PrdList)
+                            {
+                                <tr>
+
+                                    <td>@prd.ProductName</td>
+                                    <td>@prd.Category.CategoryName</td>
+                                    <td>@prd.UnitPrice</td>
+                                    <td><a href="/Home/RemoveCart?id=@prd.ProductID" class="btn btn-danger rounded">Sil</a></td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <span style="font-size:24px" class="text-center">
+                    Sepetinizde Ürün Bulunmamaktadır
+                </span>
+
+            }*@
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
